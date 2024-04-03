@@ -34,8 +34,10 @@ import HeaderComp from "./components/HeaderComp.vue";
 import TransactionListComp from "./components/TransactionListComp.vue";
 import AddTranscationsComp from "./components/AddTransactionsComp.vue";
 
-import { ref, computed } from "vue";
-
+import { ref, computed, onMounted } from "vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+// Data
 const txns = ref([
   {
     txnID: "73ff0af7-c9fd-4aee-93cb-cb44e9f873f7",
@@ -75,14 +77,67 @@ const txns = ref([
   },
 ]);
 
+// ================================== Hooks ==================================
+onMounted(() => {
+  const savedTxns = JSON.parse(localStorage.getItem("txns"));
+
+  if (savedTxns && savedTxns.length > 0) {
+    txns.value = savedTxns;
+  }
+});
+
+// ================================== Methods ==================================
 const handleTransaction = (txn) => {
   txns.value.push(txn);
+  if (txn.txnType == "credit") {
+    notify("Credit Transaction Added", "success");
+  } else {
+    notify("Debit Transaction Added", "warn");
+  }
+  saveTxnsToLocalStorage();
+};
+
+const notify = (text = "default text", classType) => {
+  switch (classType) {
+    case "danger":
+      toast.error(text, {
+        autoClose: 1000,
+      });
+      break;
+    case "info":
+      toast.info(text, {
+        autoClose: 1000,
+      });
+      break;
+    case "warn":
+      toast.warn(text, {
+        autoClose: 1000,
+      });
+      break;
+    case "success":
+      toast.success(text, {
+        autoClose: 1000,
+      });
+      break;
+    default:
+      toast(text, {
+        autoClose: 1000,
+      });
+      break;
+  }
 };
 
 const handleDeletion = (txnID) => {
   txns.value = txns.value.filter((t) => t.txnID !== txnID);
+  notify("Deleted Transaction Entry", "danger");
+  saveTxnsToLocalStorage();
 };
 
+const saveTxnsToLocalStorage = () => {
+  localStorage.setItem("txns", JSON.stringify(txns.value));
+};
+
+// ================================== Computed Propertiese ==================================
 const balance = computed(() => {
   return txns.value.reduce((acc, txn) => {
     return txn.txnType == "credit"

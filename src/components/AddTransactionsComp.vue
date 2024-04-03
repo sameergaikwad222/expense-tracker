@@ -126,7 +126,12 @@
                 />
               </div>
               <!-- Submit the Transaction -->
-              <button type="submit" class="btn btn-primary" @submit="onSubmit">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                @submit="onSubmit"
+                data-bs-dismiss="modal"
+              >
                 Submit
               </button>
             </form>

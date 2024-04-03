@@ -12,7 +12,8 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "uuid": "^9.0.1",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "vue3-toastify": "^0.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
